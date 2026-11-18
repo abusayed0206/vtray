@@ -4,3 +4,6 @@
 *.db-shm
 *.db-wal
 resources/*.res
+/dist
+/site/node_modules
+/site/.wrangler
