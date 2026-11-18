@@ -50,10 +50,12 @@ const CMD_TOGGLE_CONTEXT_MENU: u32 = 1016;
 const CMD_OPEN_LOGS: u32 = 1020;
 const CMD_CLEAR_DATA: u32 = 1021;
 const CMD_REMOVE_APP: u32 = 1022;
+const CMD_ABOUT: u32 = 1023;
 const CMD_REMOVE_FOLDER_BASE: u32 = 2000;
 const CMD_EXIT: u32 = 1099;
 const PENDING_TIMER_ID: usize = 1;
 const PROGRESS_TIMER_ID: usize = 2;
+const IDLE_TRIM_AFTER: std::time::Duration = std::time::Duration::from_secs(30);
 
 #[derive(Debug, Clone)]
 struct PendingCheck {
@@ -221,6 +223,9 @@ pub struct App {
     shutting_down: bool,
     /// Set after "Remove VT Tray from this PC"; shutdown must not write settings back.
     removed: bool,
+    /// Last user or worker activity; the working set is trimmed after a quiet period.
+    last_activity: std::time::Instant,
+    trimmed: bool,
 }
 
 impl App {
@@ -260,6 +265,8 @@ impl App {
             startup_check,
             shutting_down: false,
             removed: false,
+            last_activity: std::time::Instant::now(),
+            trimmed: false,
         })
     }
 
@@ -306,6 +313,7 @@ impl App {
         }
         self.refresh_tooltip();
         self.restart_watcher();
+        self.show_first_run_hint();
         self.process_pending_checks();
     }
 
@@ -452,6 +460,7 @@ impl App {
             }
             CMD_CLEAR_DATA => self.clear_local_data(),
             CMD_REMOVE_APP => self.remove_from_pc(),
+            CMD_ABOUT => self.show_about(),
             CMD_EXIT => unsafe {
                 let _ = DestroyWindow(self.window);
             },
@@ -474,6 +483,31 @@ impl App {
             true
         } else {
             false
+        }
+    }
+
+    /// Without a key VT Tray can only fingerprint locally; say where to add one.
+    fn show_first_run_hint(&mut self) {
+        // A launch from Explorer already shows its own "key needed" result.
+        if self.credentials.has_key().unwrap_or(true) || !self.pending.is_empty() {
+            return;
+        }
+        if let Some(tray) = self.tray.as_mut() {
+            let _ = tray.notify(s::FIRST_RUN_TITLE, s::FIRST_RUN_BODY, false);
+        }
+    }
+
+    fn show_about(&mut self) {
+        let answer = MessageDialog::new()
+            .set_title(s::ABOUT_TITLE)
+            .set_description(s::about_body(env!("CARGO_PKG_VERSION")))
+            .set_buttons(MessageButtons::YesNo)
+            .set_level(MessageLevel::Info)
+            .show();
+        if matches!(answer, MessageDialogResult::Yes)
+            && let Err(error) = shell::open_url(s::WEBSITE)
+        {
+            self.show_message(s::APP, &error.safe_message(), MessageLevel::Error);
         }
     }
 
@@ -579,6 +613,31 @@ impl App {
             self.show_upload_progress();
         } else {
             self.poll_pending();
+            self.trim_when_idle();
+        }
+    }
+
+    /// Called for every window message except timers.
+    pub fn note_activity(&mut self) {
+        self.last_activity = std::time::Instant::now();
+        self.trimmed = false;
+    }
+
+    /// After a quiet period, hand pages touched during startup or the last burst of work back
+    /// to Windows. They reload on demand; private memory is unchanged (SC-004).
+    fn trim_when_idle(&mut self) {
+        if self.trimmed
+            || self.upload_total.is_some()
+            || self.last_activity.elapsed() < IDLE_TRIM_AFTER
+        {
+            return;
+        }
+        self.trimmed = true;
+        log::info!("idle: trimming working set");
+        unsafe {
+            let _ = windows::Win32::System::ProcessStatus::EmptyWorkingSet(
+                windows::Win32::System::Threading::GetCurrentProcess(),
+            );
         }
     }
 
@@ -851,6 +910,8 @@ impl App {
         let _ = menu.item(CMD_OPEN_LOGS, s::MENU_OPEN_LOGS);
         let _ = menu.item(CMD_CLEAR_DATA, s::MENU_CLEAR_DATA);
         let _ = menu.item(CMD_REMOVE_APP, s::MENU_REMOVE_APP);
+        let _ = menu.separator();
+        let _ = menu.item(CMD_ABOUT, s::MENU_ABOUT);
         let _ = menu.separator();
         let _ = menu.item(CMD_EXIT, s::MENU_EXIT);
         let command = menu.track(self.window);

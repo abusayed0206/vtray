@@ -107,6 +107,9 @@ unsafe extern "system" fn window_proc(
         return unsafe { DefWindowProcW(window, message, wparam, lparam) };
     }
     let app = unsafe { &mut *app };
+    if message != WM_TIMER {
+        app.note_activity();
+    }
     match message {
         WM_APP_EVENT => {
             app.handle_worker_events();

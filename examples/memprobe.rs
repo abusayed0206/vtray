@@ -35,7 +35,7 @@ fn main() {
     let mut child = std::process::Command::new(&exe)
         .spawn()
         .unwrap_or_else(|error| panic!("could not start {exe}: {error}"));
-    std::thread::sleep(Duration::from_secs(10)); // warm-up
+    std::thread::sleep(Duration::from_secs(40)); // warm-up, past the 30 s idle trim
     if let Ok(Some(status)) = child.try_wait() {
         eprintln!("VT Tray exited early ({status}); is another copy already running?");
         std::process::exit(2);

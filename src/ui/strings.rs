@@ -314,3 +314,16 @@ pub fn removed_summary(problems: &[String], leftover: Option<&std::path::Path>) 
     }
     text
 }
+
+// About and first run
+pub const WEBSITE: &str = "https://vtray.sayed.app";
+pub const MENU_ABOUT: &str = "About VT Tray...";
+pub const ABOUT_TITLE: &str = "About VT Tray";
+pub const FIRST_RUN_TITLE: &str = "VT Tray is running";
+pub const FIRST_RUN_BODY: &str = "Add your VirusTotal API key to start checking files: right-click this icon, then Settings > Set or replace API key.";
+
+pub fn about_body(version: &str) -> String {
+    format!(
+        "VT Tray {version}\nVirusTotal checks from your Windows tray.\n\nWebsite and updates: {WEBSITE}\nSource code: https://github.com/abusayed0206/vtray\n\nVT Tray sends nothing anywhere except VirusTotal, and only file hashes unless you confirm an upload.\n\nOpen the website?"
+    )
+}

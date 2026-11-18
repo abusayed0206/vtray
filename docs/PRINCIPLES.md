@@ -1,13 +1,4 @@
-# VT Tray Constitution
-
-<!--
-Sync Impact Report
-Version change: N/A -> 1.0.0 (initial ratification)
-Modified principles: N/A (initial adoption)
-Added sections: Core Principles (I-V), Additional Constraints, Development Workflow, Governance
-Removed sections: None
-Follow-up TODOs: None
--->
+# VT Tray Principles
 
 ## Core Principles
 

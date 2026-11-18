@@ -29,7 +29,7 @@ hashes. **Nothing is ever uploaded without your explicit confirmation for that f
   a 100-request manual reserve, and warnings before limits are reached.
 - **Private by design.** The API key lives in Windows Credential Manager; logs and settings never
   contain it, and only file names (never folder paths) are sent.
-- **Tiny.** About 12 MB of memory and effectively 0% CPU while idle (measured in CI).
+- **Tiny.** About 0.4 MB working set and 2 MB private memory, 0% CPU while idle (measured in CI).
 - **Leaves nothing behind.** Uninstall (or *Remove VT Tray from this PC*) removes startup and
   Explorer entries, the key, settings, cache, and logs.
 
@@ -67,8 +67,9 @@ build with a silent install/uninstall check, and the memory budget. Tags `v*` pu
 
 ## Design documents
 
-The specification, plan, and task list live in [`specs/001-vt-tray-monitor`](specs/001-vt-tray-monitor);
-the project rules are in [`.specify/memory/constitution.md`](.specify/memory/constitution.md).
+- [docs/SPEC.md](docs/SPEC.md): what VT Tray must do (requirements and success criteria).
+- [docs/PRINCIPLES.md](docs/PRINCIPLES.md): the rules every change follows: consent before upload,
+  quota discipline, privacy, low resource use, no destructive actions.
 
 ## License
 
