@@ -1,0 +1,2 @@
+This is a harmless test fixture. It contains no executable content and is safe to upload to a
+disposable test project if a manual test explicitly needs a small benign file.
