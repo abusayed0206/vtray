@@ -1,30 +1,45 @@
-/* Palettes: Pearl Minimal (light) and Void Space (dark) from the no-slop-ui reference. */
-:root {
-  --background: #f8f9fa;
-  --surface: #ffffff;
-  --sunken: #eef1f4;
-  --primary: #0066cc;
-  --primary-text: #ffffff;
-  --text: #212529;
-  --muted: #5c636a;
-  --border: #dee2e6;
-  --taskbar: #e9ecef;
-  color-scheme: light;
+/* World: a pharmacy dispensing label and its patient leaflet.
+   Labels print on off-white thermal stock; auxiliary-sticker colours own whole regions. */
+@font-face {
+  font-family: "Archivo";
+  src: url("fonts/Archivo.woff2") format("woff2");
+  font-weight: 400 800;
+  font-stretch: 62% 125%;
+  font-display: swap;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0d1117;
-    --surface: #161b22;
-    --sunken: #11161d;
-    --primary: #58a6ff;
-    --primary-text: #0d1117;
-    --text: #c9d1d9;
-    --muted: #8b949e;
-    --border: #30363d;
-    --taskbar: #1c2128;
-    color-scheme: dark;
-  }
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("fonts/JetBrainsMono.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+
+@property --fold {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 46px;
+}
+
+:root {
+  --ground: #e6e5dd;
+  --stock: #f6f6f1;
+  --window: #ffffff;
+  --ink: #111111;
+  --ink-2: #3b3b38;
+  --rule: #c4c3ba;
+  --yellow: #ffd400;
+  --yellow-ink: #2b2400;
+  --orange: #ff7a1a;
+  --orange-ink: #2a1200;
+  --blue: #8fd0ef;
+  --blue-ink: #0c2533;
+  --green: #17733f;
+  --label: "Archivo", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --stub: 280px;
+  color-scheme: light;
+  accent-color: var(--ink);
 }
 
 *,
@@ -35,544 +50,1046 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-color: var(--ink-2) var(--ground);
 }
 
 body {
   margin: 0;
-  background: var(--background);
-  color: var(--text);
-  font-family: system-ui, -apple-system, "Helvetica Neue", sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--label);
+  font-size: 17px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
+::selection {
+  background: var(--yellow);
+  color: var(--ink);
+}
+
 a {
-  color: var(--primary);
-  text-decoration: none;
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration-thickness: 2px;
 }
 
-a:focus-visible,
-.button:focus-visible,
-summary:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
 }
 
 img {
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
-.icon {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: var(--primary);
-  stroke-width: 1.75;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  flex-shrink: 0;
+h1,
+h2,
+h3 {
+  margin: 0;
+  text-wrap: balance;
 }
 
-.wrap {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 0 24px;
+p {
+  margin: 0;
+  text-wrap: pretty;
 }
 
-/* Header */
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+.skip {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  background: var(--ink);
+  color: var(--stock);
+  padding: 10px 14px;
+  z-index: 20;
 }
 
-.header-row {
+.skip:focus {
+  top: 12px;
+}
+
+/* Top bar */
+.bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 32px;
 }
 
-.brand {
+.mark {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: var(--text);
-  font-weight: 650;
-  font-size: 17px;
-}
-
-.brand:hover {
   text-decoration: none;
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
-nav {
+.bar nav {
   display: flex;
   align-items: center;
-  gap: 24px;
-}
-
-nav a {
-  color: var(--muted);
+  gap: 28px;
+  font-stretch: 85%;
+  font-weight: 600;
   font-size: 15px;
-  transition: color 150ms ease;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-nav a:hover {
-  color: var(--text);
+.bar nav a {
   text-decoration: none;
 }
 
-nav .nav-cta {
-  color: var(--primary-text);
-  background: var(--primary);
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-weight: 500;
+.bar nav a:hover {
+  text-decoration: underline;
 }
 
-nav .nav-cta:hover {
-  color: var(--primary-text);
-  opacity: 0.9;
+.bar nav .nav-dl {
+  padding: 6px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
 }
 
-/* Intro */
-.intro {
+.bar nav .nav-dl:hover {
+  text-decoration: none;
+  background: var(--ink);
+  color: var(--stock);
+}
+
+/* The counter: one dispensing label, printed on stock. */
+.counter {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 32px 96px;
+}
+
+.label {
+  position: relative;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 1fr var(--stub);
+  background: var(--stock);
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgba(17, 17, 17, 0.08), 0 10px 26px rgba(17, 17, 17, 0.1);
+}
+
+.label-sheet {
+  padding: 36px 44px 32px;
+}
+
+.label-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding-bottom: 16px;
+  border-bottom: 3px solid var(--ink);
+  font-stretch: 70%;
+  text-transform: uppercase;
+}
+
+.label-brand {
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: 0.01em;
+}
+
+.label-kind {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+
+.label-no {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-stretch: normal;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.directions {
+  margin: 28px 0;
+  font-weight: 800;
+  font-stretch: 68%;
+  font-size: clamp(38px, 4.4vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  max-width: 21ch;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1.7fr 0.7fr 1fr 1.3fr;
+  margin: 0;
+  border-top: 1px solid var(--ink);
+}
+
+.field {
+  padding: 12px 16px 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.field + .field {
+  padding-left: 16px;
+  border-left: 1px solid var(--rule);
+}
+
+.field.wide {
+  grid-column: 1 / -1;
+  border-left: 0;
+  padding-left: 0;
+}
+
+.field dt {
+  font-stretch: 75%;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.field dd {
+  margin: 4px 0 0;
+}
+
+.v {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.hash {
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.result .v strong {
+  color: var(--green);
+  font-size: 18px;
+}
+
+.dosage {
+  margin-top: 22px;
+  font-size: 19px;
+  max-width: 52ch;
+}
+
+.sample {
+  margin-top: 14px;
+  max-width: 56ch;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* Tear-off stub: perforation with die-cut notches; Download is its printed instruction. */
+.stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 36px 28px 32px;
+  border-left: 2px dashed var(--rule);
+}
+
+.stub::before,
+.stub::after {
+  content: "";
+  position: absolute;
+  left: -13px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ground);
+}
+
+.stub::before {
+  top: -12px;
+}
+
+.stub::after {
+  bottom: -12px;
+}
+
+.stub-kicker {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.take {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 160ms ease-out, color 160ms ease-out;
+}
+
+.take:hover {
+  background: var(--ink);
+  color: var(--stock);
+}
+
+.take-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 800;
+  font-stretch: 72%;
+  font-size: 26px;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.take-arrow {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.take-sub {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.stub-facts {
+  list-style: none;
+  margin: 6px 0 4px;
+  padding: 0;
+  font-size: 15px;
+}
+
+.stub-facts li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.stub-link {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Auxiliary warning stickers. */
+.sticker {
+  position: absolute;
+  right: calc(var(--stub) + 28px);
+  top: -26px;
+  width: 230px;
+  padding: 18px 20px;
+  border-radius: 12px;
+  transform: rotate(-4deg);
+  box-shadow: 0 2px 2px rgba(17, 17, 17, 0.1), 0 8px 18px rgba(17, 17, 17, 0.14);
+}
+
+.sticker-yellow {
+  background: var(--yellow);
+  color: var(--yellow-ink);
+}
+
+.sticker-blue {
+  right: calc(var(--stub) + 44px);
+  left: auto;
+  top: auto;
+  bottom: -22px;
+  width: 210px;
+  padding: 12px 16px;
+  background: var(--blue);
+  color: var(--blue-ink);
+  transform: rotate(2deg);
+}
+
+.sticker-big {
+  display: block;
+  font-weight: 800;
+  font-stretch: 66%;
+  font-size: 26px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sticker-blue .sticker-big {
+  font-size: 18px;
+}
+
+.sticker-small {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.sticker-blue .sticker-small {
+  margin-top: 4px;
+}
+
+/* Label printer: lines feed in once on load from an already-visible default. */
+.js [data-print] .directions,
+.js [data-print] .field,
+.js [data-print] .dosage {
+  animation: feed 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.js [data-print] .field:nth-child(1) { animation-delay: 120ms; }
+.js [data-print] .field:nth-child(2) { animation-delay: 180ms; }
+.js [data-print] .field:nth-child(3) { animation-delay: 240ms; }
+.js [data-print] .field:nth-child(4) { animation-delay: 300ms; }
+.js [data-print] .field:nth-child(5) { animation-delay: 360ms; }
+.js [data-print] .dosage { animation-delay: 420ms; }
+
+@keyframes feed {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* The leaflet: dense numbered small print, folded in panels. */
+.leaflet {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 96px 32px;
+}
+
+.leaflet-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: end;
+  padding-bottom: 20px;
+  border-bottom: 3px solid var(--ink);
+}
+
+.leaflet-head h2,
+.field-yellow h2,
+.field-orange h2,
+.field-blue h2,
+.last h2 {
+  font-weight: 800;
+  font-stretch: 70%;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.leaflet-head p {
+  color: var(--ink-2);
+  max-width: 46ch;
+}
+
+.leaflet-cols {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--stock);
+  border-radius: 0 0 6px 6px;
+}
+
+.part {
+  padding: 28px;
+}
+
+.part + .part {
+  /* Fold line between leaflet panels. */
+  border-left: 1px dashed var(--rule);
+}
+
+.part h3 {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin-bottom: 14px;
+  font-stretch: 80%;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.part-n {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.part p + p {
+  margin-top: 12px;
+}
+
+.ticks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ticks li {
+  position: relative;
+  padding: 8px 0 8px 22px;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.ticks li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 16px;
+  width: 9px;
+  height: 5px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+}
+
+.pack {
+  margin: 20px 0 0;
+}
+
+.pack img {
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(17, 17, 17, 0.12), 0 6px 16px rgba(17, 17, 17, 0.1);
+}
+
+.pack figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* Sticker-coloured fields own whole regions. */
+.field-yellow,
+.field-orange,
+.field-blue {
+  padding: 96px max(32px, calc((100vw - 1136px) / 2));
+}
+
+.field-yellow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px);
   gap: 56px;
   align-items: center;
-  padding-top: 72px;
-  padding-bottom: 72px;
+  background: var(--yellow);
+  color: var(--yellow-ink);
 }
 
-h1 {
-  font-size: 48px;
-  line-height: 1.1;
-  margin: 0 0 20px;
-  letter-spacing: -0.02em;
-  font-weight: 700;
-}
-
-.lead {
+.consent-copy p {
+  margin-top: 18px;
   font-size: 19px;
-  color: var(--muted);
-  margin: 0 0 28px;
-  max-width: 560px;
+  max-width: 54ch;
 }
 
-.lead.small {
-  font-size: 17px;
-  margin: 0;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.actions.center {
-  justify-content: center;
-  margin-bottom: 0;
-}
-
-.button {
-  display: inline-block;
-  padding: 11px 20px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
-  font-weight: 500;
-  transition: background-color 150ms ease, border-color 150ms ease, opacity 150ms ease;
-}
-
-.button:hover {
-  text-decoration: none;
-  border-color: var(--muted);
-}
-
-.button.primary {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--primary-text);
-}
-
-.button.primary:hover {
-  opacity: 0.9;
-}
-
-.meta {
-  color: var(--muted);
-  font-size: 14px;
-  margin: 0 0 12px;
-}
-
-.badges {
-  display: flex;
-  gap: 8px;
-  margin: 0;
-}
-
-/* Product visual: the real tray menu above a plain taskbar strip. */
-.stage {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  background: var(--sunken);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px 24px 0;
-  overflow: hidden;
-}
-
-.stage-menu {
-  width: 280px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  background: #ffffff;
-  margin-right: 24px;
-}
-
-.taskbar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: calc(100% + 48px);
-  margin: 20px -24px 0;
-  height: 44px;
-  padding: 0 16px;
-  background: var(--taskbar);
-  border-top: 1px solid var(--border);
-}
-
-.tb-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  background: var(--border);
-}
-
-.tb-spacer {
-  flex: 1;
-}
-
-.tb-tray {
-  outline: 1px solid var(--primary);
-  outline-offset: 4px;
-  border-radius: 2px;
-}
-
-.tb-clock {
-  font-size: 12px;
-  color: var(--muted);
-  margin-left: 8px;
-}
-
-/* Facts strip */
-.facts {
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.facts-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-}
-
-.fact {
-  padding: 24px 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.fact + .fact {
-  padding-left: 24px;
-  border-left: 1px solid var(--border);
-}
-
-.fact strong {
-  font-size: 28px;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.fact span {
-  color: var(--muted);
-  font-size: 14px;
-}
-
-/* Sections */
-.section {
-  padding-top: 64px;
-  padding-bottom: 64px;
-}
-
-.section + .section {
-  border-top: 1px solid var(--border);
-}
-
-h2 {
-  font-size: 28px;
-  line-height: 1.25;
-  margin: 0 0 28px;
-  letter-spacing: -0.01em;
-}
-
-h3 {
-  font-size: 16px;
-  margin: 0 0 6px;
-}
-
-.how {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-
-.how p,
-.feature p {
-  margin: 0;
-  color: var(--muted);
+.consent-copy .aside {
   font-size: 15px;
 }
 
-.step {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  margin-bottom: 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 14px;
+/* The peel: a die-cut sticker sits over the question with one corner already lifted. */
+.peel {
+  position: relative;
+  padding-left: 24px;
 }
 
-.features {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
+.dialog {
+  background: var(--window);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 22px 26px 20px;
+  box-shadow: 0 2px 4px rgba(43, 36, 0, 0.12), 0 16px 36px rgba(43, 36, 0, 0.16);
+  font-size: 15px;
 }
 
-.feature {
-  background: var(--surface);
-  padding: 24px;
+.dialog p + p {
+  margin-top: 10px;
 }
 
-.feature .icon {
-  margin-bottom: 12px;
+.dialog-title {
+  font-weight: 700;
+  font-size: 17px;
 }
 
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  align-items: start;
+.dialog-facts {
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-.window {
-  margin: 0;
-  background: var(--sunken);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
 }
 
-.window img {
-  display: block;
-  margin: 0 auto;
+.dialog-buttons span {
+  padding: 7px 22px;
+  border: 1px solid var(--rule);
   border-radius: 6px;
-  border: 1px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  background: #ffffff;
-}
-
-figcaption {
-  margin-top: 14px;
   font-size: 14px;
-  color: var(--muted);
-  text-align: center;
 }
 
-/* Privacy */
-.privacy {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 48px;
-  align-items: start;
+.dialog-buttons .btn-no {
+  border: 2px solid var(--ink);
 }
 
-.privacy h2 {
-  margin-bottom: 12px;
+.dialog-note {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--ink-2);
 }
 
-.checks {
+.peel-sticker {
+  display: none;
+}
+
+.js .peel-sticker {
+  --fold: 46px;
+  position: absolute;
+  left: 0;
+  top: 52px;
+  width: min(330px, 78%);
+  display: block;
+  padding: 22px 24px 30px;
+  border: 0;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  background: var(--orange);
+  color: var(--orange-ink);
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 2px 2px rgba(42, 18, 0, 0.2)) drop-shadow(0 10px 18px rgba(42, 18, 0, 0.2));
+  /* The lifted corner is cut away; the triangle below shows the sticker's white liner side. */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--fold)), calc(100% - var(--fold)) 100%, 0 100%);
+  transition: --fold 700ms cubic-bezier(0.16, 1, 0.3, 1), opacity 240ms ease-out 520ms;
+}
+
+.js .peel-sticker::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--fold);
+  height: var(--fold);
+  background: linear-gradient(315deg, transparent 49%, #d9d6c8 50%, #fbfaf5 52%, #fbfaf5 100%);
+}
+
+.js .peel-sticker .sticker-big {
+  font-size: 30px;
+}
+
+.js .peel-sticker .sticker-small {
+  font-size: 14px;
+  max-width: 26ch;
+}
+
+.js .peel.is-peeled .peel-sticker {
+  --fold: 160%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Orange field: dosage directions on a printed strip. */
+.field-orange {
+  background: var(--orange);
+  color: var(--orange-ink);
+}
+
+.dose-label {
+  margin: 40px 0 28px;
+  max-width: 760px;
+  background: var(--stock);
+  color: var(--ink);
+  border-radius: 10px;
+  padding: 26px 32px 24px;
+  box-shadow: 0 2px 3px rgba(42, 18, 0, 0.16), 0 12px 26px rgba(42, 18, 0, 0.16);
+}
+
+.dose-head {
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--ink);
+  font-weight: 800;
+  font-stretch: 70%;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+
+.dose-lines {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.checks li {
-  display: flex;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+.dose-lines li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 19px;
 }
 
-.checks li:first-child {
-  padding-top: 0;
+.dose-lines li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
 }
 
-.checks .icon {
-  margin-top: 3px;
+.dose-lines b {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
 }
 
-/* FAQ */
-.faq {
-  border-top: 1px solid var(--border);
+.field-orange > p {
+  font-size: 19px;
+  max-width: 62ch;
+}
+
+/* Pale blue field: side effects. */
+.field-blue {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 56px;
+  background: var(--blue);
+  color: var(--blue-ink);
+}
+
+.effects .lede {
+  margin-top: 18px;
+  font-size: 21px;
+  max-width: 34ch;
+}
+
+.effects-list h3 {
+  font-stretch: 80%;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.effects-list .ticks li {
+  font-size: 18px;
+}
+
+.small {
+  margin-top: 18px;
+  font-size: 15px;
+}
+
+/* The pack: screenshots at their own pixel scale. */
+.pack-row {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  gap: 32px 40px;
+  align-items: start;
+}
+
+.pack-row .pack {
+  margin: 0;
+}
+
+/* The installer is supporting evidence; the quick check leads. */
+.pack-row .pack-small img {
+  width: 100%;
+  max-width: 494px;
+  height: auto;
 }
 
 .faq details {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--rule);
 }
 
 .faq summary {
-  cursor: pointer;
-  list-style: none;
-  padding: 16px 0;
-  font-weight: 600;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 0;
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  font-stretch: 85%;
+  font-size: 20px;
 }
 
 .faq summary::-webkit-details-marker {
   display: none;
 }
 
+/* Drawn plus and minus, in the ticks' 2px stroke. */
 .faq summary::after {
-  content: "+";
-  color: var(--muted);
-  font-weight: 400;
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  background:
+    linear-gradient(currentColor, currentColor) center / 14px 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 2px 14px no-repeat;
 }
 
 .faq details[open] summary::after {
-  content: "\2212";
+  background: linear-gradient(currentColor, currentColor) center / 14px 2px no-repeat;
 }
 
 .faq details p {
-  margin: 0 0 16px;
-  color: var(--muted);
-  max-width: 720px;
+  padding-bottom: 18px;
+  max-width: 64ch;
+  color: var(--ink-2);
 }
 
-/* Closing call to action */
-.closing {
-  text-align: center;
-  padding-top: 64px;
-  padding-bottom: 72px;
-  border-top: 1px solid var(--border);
+/* Closing: the label's stub again, ready to tear off. */
+.last {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 32px 112px;
 }
 
-.closing h2 {
-  margin-bottom: 20px;
+.last h2 {
+  margin-bottom: 28px;
 }
 
-/* Footer */
-.site-footer {
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--muted);
-  font-size: 14px;
+.closing-label {
+  display: grid;
+  grid-template-columns: 1fr var(--stub);
+  max-width: 760px;
+  background: var(--stock);
+  border-radius: 10px;
+  box-shadow: 0 1px 1px rgba(17, 17, 17, 0.08), 0 10px 26px rgba(17, 17, 17, 0.1);
 }
 
-.footer-row {
+.closing-sheet {
+  padding: 26px 32px;
+}
+
+.closing-sheet .label-head {
+  padding-bottom: 12px;
+}
+
+.closing-sheet p {
+  margin-top: 14px;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.closing-label .stub {
+  padding: 26px 24px;
+}
+
+.badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.badges img {
+  display: inline;
+}
+
+.foot {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 24px;
-  padding-bottom: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 32px 40px;
+  border-top: 3px solid var(--ink);
+  font-size: 14px;
 }
 
-.footer-links {
+.foot-links {
   display: flex;
-  gap: 16px;
+  gap: 18px;
 }
 
-@media (max-width: 900px) {
-  .intro,
-  .privacy {
+@media (max-width: 960px) {
+  .label,
+  .closing-label {
     grid-template-columns: 1fr;
-    gap: 40px;
   }
 
-  .intro {
-    padding-top: 48px;
-    padding-bottom: 48px;
+  .label-sheet {
+    padding: 32px 24px 28px;
   }
 
-  h1 {
-    font-size: 36px;
-  }
-
-  .facts-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .fact:nth-child(3) {
-    padding-left: 0;
+  .stub {
+    padding: 28px 24px;
     border-left: 0;
+    border-top: 2px dashed var(--rule);
   }
 
-  .how,
-  .features,
-  .gallery {
+  .stub::before,
+  .stub::after {
+    top: -13px;
+    bottom: auto;
+  }
+
+  .stub::before {
+    left: -12px;
+  }
+
+  .stub::after {
+    left: auto;
+    right: -12px;
+  }
+
+  .sticker {
+    right: 16px;
+    top: -30px;
+    width: 200px;
+  }
+
+  /* On phones the advisory sticker sits after the stub so it covers no links. */
+  .sticker-blue {
+    position: relative;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: 190px;
+    margin: 4px 0 -18px 24px;
+  }
+
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field:nth-child(odd) {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .leaflet-head,
+  .field-yellow,
+  .field-blue {
     grid-template-columns: 1fr;
   }
 
-  nav a:not(.nav-cta) {
+  .leaflet-cols {
+    grid-template-columns: 1fr;
+  }
+
+  .part + .part {
+    border-left: 0;
+    border-top: 1px dashed var(--rule);
+  }
+
+  .pack-row {
+    grid-template-columns: 1fr;
+  }
+
+  .bar nav a:not(:last-child) {
     display: none;
   }
 }
 
-@media (max-width: 480px) {
-  .wrap {
-    padding: 0 16px;
+@media (max-width: 520px) {
+  body {
+    font-size: 16px;
   }
 
-  h1 {
-    font-size: 30px;
-  }
-
-  .stage-menu {
-    width: 100%;
-    margin-right: 0;
-  }
-
-  .fact + .fact {
+  .bar,
+  .counter,
+  .leaflet,
+  .last,
+  .foot {
     padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .counter {
+    padding-top: 40px;
+  }
+
+  .field-yellow,
+  .field-orange,
+  .field-blue {
+    padding: 72px 16px;
+  }
+
+  .label-head {
+    flex-wrap: wrap;
+    gap: 6px 14px;
+  }
+
+  .label-no {
+    margin-left: 0;
+  }
+
+  .directions {
+    font-size: 40px;
+  }
+
+  .sticker {
+    width: 168px;
+    padding: 14px;
+  }
+
+  .sticker .sticker-big {
+    font-size: 20px;
+  }
+
+  .sticker-blue .sticker-big {
+    font-size: 16px;
+  }
+
+  .part {
+    padding: 22px 18px;
+  }
+
+  .dose-label {
+    padding: 20px 18px;
+  }
+
+  .dose-lines li {
+    font-size: 17px;
+  }
+
+  .js .peel-sticker {
+    width: 86%;
+  }
+
+  .js .peel-sticker .sticker-big {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js [data-print] .directions,
+  .js [data-print] .field,
+  .js [data-print] .dosage {
+    animation: none;
+  }
+
+  .js .peel-sticker {
+    transition: none;
   }
 }

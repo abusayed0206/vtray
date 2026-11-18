@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-18T20:38:58.872Z",
+  "title": "Design System: VT Tray",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Counter Ground",
+        "tonalRamp": [
+          "oklch(15% 0.003 100)",
+          "oklch(26% 0.006 100)",
+          "oklch(37% 0.008 100)",
+          "oklch(48% 0.010 100)",
+          "oklch(60% 0.011 100)",
+          "oklch(72% 0.008 100)",
+          "oklch(84% 0.006 100)",
+          "oklch(95% 0.003 100)"
+        ]
+      },
+      "stock": {
+        "role": "neutral",
+        "displayName": "Label Stock",
+        "tonalRamp": [
+          "oklch(15% 0.002 105)",
+          "oklch(26% 0.004 105)",
+          "oklch(37% 0.005 105)",
+          "oklch(48% 0.007 105)",
+          "oklch(60% 0.007 105)",
+          "oklch(72% 0.006 105)",
+          "oklch(84% 0.004 105)",
+          "oklch(95% 0.002 105)"
+        ]
+      },
+      "window": {
+        "role": "neutral",
+        "displayName": "Window White",
+        "tonalRamp": [
+          "oklch(15% 0.000 0)",
+          "oklch(26% 0.000 0)",
+          "oklch(37% 0.000 0)",
+          "oklch(48% 0.000 0)",
+          "oklch(60% 0.000 0)",
+          "oklch(72% 0.000 0)",
+          "oklch(84% 0.000 0)",
+          "oklch(95% 0.000 0)"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Thermal Ink",
+        "tonalRamp": [
+          "oklch(15% 0.001 100)",
+          "oklch(26% 0.002 100)",
+          "oklch(37% 0.003 100)",
+          "oklch(48% 0.003 100)",
+          "oklch(60% 0.004 100)",
+          "oklch(72% 0.003 100)",
+          "oklch(84% 0.002 100)",
+          "oklch(95% 0.001 100)"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Faded Ink",
+        "tonalRamp": [
+          "oklch(15% 0.002 105)",
+          "oklch(26% 0.003 105)",
+          "oklch(37% 0.004 105)",
+          "oklch(48% 0.005 105)",
+          "oklch(60% 0.005 105)",
+          "oklch(72% 0.004 105)",
+          "oklch(84% 0.003 105)",
+          "oklch(95% 0.002 105)"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": [
+          "oklch(15% 0.004 105)",
+          "oklch(26% 0.007 105)",
+          "oklch(37% 0.009 105)",
+          "oklch(48% 0.012 105)",
+          "oklch(60% 0.013 105)",
+          "oklch(72% 0.010 105)",
+          "oklch(84% 0.007 105)",
+          "oklch(95% 0.004 105)"
+        ]
+      },
+      "sticker-yellow": {
+        "role": "secondary",
+        "displayName": "Warning Yellow",
+        "tonalRamp": [
+          "oklch(15% 0.049 95)",
+          "oklch(26% 0.085 95)",
+          "oklch(37% 0.121 95)",
+          "oklch(48% 0.157 95)",
+          "oklch(60% 0.164 95)",
+          "oklch(72% 0.124 95)",
+          "oklch(84% 0.085 95)",
+          "oklch(95% 0.049 95)"
+        ]
+      },
+      "yellow-ink": {
+        "role": "secondary",
+        "displayName": "Yellow Ink",
+        "tonalRamp": [
+          "oklch(15% 0.014 95)",
+          "oklch(26% 0.024 95)",
+          "oklch(37% 0.034 95)",
+          "oklch(48% 0.044 95)",
+          "oklch(60% 0.045 95)",
+          "oklch(72% 0.035 95)",
+          "oklch(84% 0.024 95)",
+          "oklch(95% 0.014 95)"
+        ]
+      },
+      "sticker-orange": {
+        "role": "secondary",
+        "displayName": "Caution Orange",
+        "tonalRamp": [
+          "oklch(15% 0.052 50)",
+          "oklch(26% 0.090 50)",
+          "oklch(37% 0.128 50)",
+          "oklch(48% 0.166 50)",
+          "oklch(60% 0.173 50)",
+          "oklch(72% 0.131 50)",
+          "oklch(84% 0.090 50)",
+          "oklch(95% 0.052 50)"
+        ]
+      },
+      "orange-ink": {
+        "role": "secondary",
+        "displayName": "Orange Ink",
+        "tonalRamp": [
+          "oklch(15% 0.014 50)",
+          "oklch(26% 0.024 50)",
+          "oklch(37% 0.034 50)",
+          "oklch(48% 0.044 50)",
+          "oklch(60% 0.045 50)",
+          "oklch(72% 0.035 50)",
+          "oklch(84% 0.024 50)",
+          "oklch(95% 0.014 50)"
+        ]
+      },
+      "sticker-blue": {
+        "role": "secondary",
+        "displayName": "Advisory Blue",
+        "tonalRamp": [
+          "oklch(15% 0.025 225)",
+          "oklch(26% 0.043 225)",
+          "oklch(37% 0.061 225)",
+          "oklch(48% 0.079 225)",
+          "oklch(60% 0.082 225)",
+          "oklch(72% 0.062 225)",
+          "oklch(84% 0.043 225)",
+          "oklch(95% 0.025 225)"
+        ]
+      },
+      "blue-ink": {
+        "role": "secondary",
+        "displayName": "Blue Ink",
+        "tonalRamp": [
+          "oklch(15% 0.014 225)",
+          "oklch(26% 0.024 225)",
+          "oklch(37% 0.034 225)",
+          "oklch(48% 0.044 225)",
+          "oklch(60% 0.045 225)",
+          "oklch(72% 0.035 225)",
+          "oklch(84% 0.024 225)",
+          "oklch(95% 0.014 225)"
+        ]
+      },
+      "verdict-green": {
+        "role": "tertiary",
+        "displayName": "Verdict Green",
+        "tonalRamp": [
+          "oklch(15% 0.035 150)",
+          "oklch(26% 0.061 150)",
+          "oklch(37% 0.087 150)",
+          "oklch(48% 0.113 150)",
+          "oklch(60% 0.118 150)",
+          "oklch(72% 0.090 150)",
+          "oklch(84% 0.061 150)",
+          "oklch(95% 0.035 150)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Directions",
+        "purpose": "The label's directions line (h1) only."
+      },
+      "headline": {
+        "displayName": "Section Head",
+        "purpose": "Section h2s in leaflet heads and coloured fields."
+      },
+      "title": {
+        "displayName": "Leaflet Part",
+        "purpose": "Numbered leaflet part headings."
+      },
+      "body": {
+        "displayName": "Small Print",
+        "purpose": "Leaflet reading text and FAQ answers."
+      },
+      "body-large": {
+        "displayName": "Directions Copy",
+        "purpose": "Dosage line, consent copy, dose lines."
+      },
+      "label": {
+        "displayName": "Field Name",
+        "purpose": "Uppercase printed field names on labels."
+      },
+      "nav": {
+        "displayName": "Nav",
+        "purpose": "Top bar links."
+      },
+      "cta": {
+        "displayName": "Take-off",
+        "purpose": "The download instruction inside the stub."
+      },
+      "value": {
+        "displayName": "Stamped Value",
+        "purpose": "Hashes, sizes, counts, limits, versions."
+      }
+    },
+    "shadows": [
+      {
+        "name": "label-lift",
+        "value": "0 1px 1px rgba(17,17,17,0.08), 0 10px 26px rgba(17,17,17,0.1)",
+        "purpose": "Dispensing and closing labels on the ground."
+      },
+      {
+        "name": "sticker-lift",
+        "value": "0 2px 2px rgba(17,17,17,0.1), 0 8px 18px rgba(17,17,17,0.14)",
+        "purpose": "Die-cut warning stickers."
+      },
+      {
+        "name": "screenshot-lift",
+        "value": "0 1px 2px rgba(17,17,17,0.12), 0 6px 16px rgba(17,17,17,0.1)",
+        "purpose": "Pack screenshots."
+      },
+      {
+        "name": "dialog-on-yellow",
+        "value": "0 2px 4px rgba(43,36,0,0.12), 0 16px 36px rgba(43,36,0,0.16)",
+        "purpose": "The consent dialog on the yellow field."
+      },
+      {
+        "name": "strip-on-orange",
+        "value": "0 2px 3px rgba(42,18,0,0.16), 0 12px 26px rgba(42,18,0,0.16)",
+        "purpose": "The dose strip on the orange field."
+      },
+      {
+        "name": "peel-drop",
+        "value": "drop-shadow(0 2px 2px rgba(42,18,0,0.2)) drop-shadow(0 10px 18px rgba(42,18,0,0.2))",
+        "purpose": "Filter on the clipped peel sticker so the shadow follows the folded corner."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-print",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Printer feed and sticker peel."
+      },
+      {
+        "name": "print-feed",
+        "value": "clip-path inset(0 100% 0 0) to inset(0), 520ms ease-print, 60ms stagger from 120ms",
+        "purpose": "Label lines feed in once on load, only under .js."
+      },
+      {
+        "name": "peel",
+        "value": "@property --fold <length-percentage> 46px to 160%, 700ms ease-print; opacity 240ms ease-out 520ms delay",
+        "purpose": "Click peels the consent sticker off the dialog."
+      },
+      {
+        "name": "ink-fill",
+        "value": "background-color, color 160ms ease-out",
+        "purpose": "Take-off button inverts to ink on hover."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none; transition: none; scroll-behavior: auto",
+        "purpose": "Everything static under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "960px",
+        "purpose": "Labels and grids collapse to one column, stub moves under sheet."
+      },
+      {
+        "name": "phone",
+        "value": "520px",
+        "purpose": "16px gutters, 16px body, 40px directions, smaller stickers."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Take-off Button",
+      "kind": "button",
+      "refersTo": "button-take",
+      "description": "The stub's download instruction; inverts to ink on hover.",
+      "html": "<a class=\"ds-take\" href=\"#\"><span class=\"ds-take-main\">Download for Windows <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 4v13M6 11l6 6 6-6M5 20h14\"/></svg></span><span class=\"ds-take-sub\">Free &middot; v1.0.0 &middot; 3.7 MB</span></a>",
+      "css": ":host{--ground:#e6e5dd;--stock:#f6f6f1;--ink:#111;--ink-2:#3b3b38;--rule:#c4c3ba}.ds-take{display:inline-flex;flex-direction:column;gap:4px;padding:16px 18px;border:3px solid var(--ink);border-radius:6px;color:var(--ink);background:var(--stock);text-decoration:none;font-family:Archivo,system-ui,sans-serif;transition:background-color 160ms ease-out,color 160ms ease-out}.ds-take:hover{background:var(--ink);color:var(--stock)}.ds-take:focus-visible{outline:3px solid var(--ink);outline-offset:3px}.ds-take-main{display:flex;align-items:center;gap:12px;font-weight:800;font-stretch:72%;font-size:26px;line-height:1.15;text-transform:uppercase}.ds-take-main svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.ds-take-sub{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px}"
+    },
+    {
+      "name": "Nav",
+      "kind": "nav",
+      "refersTo": "nav-download",
+      "description": "Top bar with mark, uppercase links and outlined Download.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-mark\">VT Tray</span><span class=\"ds-links\"><a href=\"#\">How it works</a><a href=\"#\">Questions</a><a class=\"ds-dl\" href=\"#\">Download</a></span></nav>",
+      "css": ":host{--ground:#e6e5dd;--stock:#f6f6f1;--ink:#111;--ink-2:#3b3b38;--rule:#c4c3ba}.ds-nav{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:20px 32px;background:var(--ground);color:var(--ink);font-family:Archivo,system-ui,sans-serif}.ds-mark{font-weight:800;font-stretch:75%;font-size:22px;text-transform:uppercase}.ds-links{display:flex;align-items:center;gap:28px;font-stretch:85%;font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase}.ds-links a{color:inherit;text-decoration:none}.ds-links a:hover{text-decoration:underline}.ds-links a:focus-visible{outline:3px solid var(--ink);outline-offset:3px}.ds-dl{padding:6px 12px;border:2px solid var(--ink);border-radius:6px}.ds-links .ds-dl:hover{text-decoration:none;background:var(--ink);color:var(--stock)}"
+    },
+    {
+      "name": "Dispensing Label",
+      "kind": "card",
+      "refersTo": "dispensing-label",
+      "description": "Label head and printed fields on stock, with a perforated stub.",
+      "html": "<article class=\"ds-label\"><div class=\"ds-sheet\"><header class=\"ds-head\"><span class=\"ds-brand\">VT Tray</span><span class=\"ds-kind\">VirusTotal fingerprint check</span><span class=\"ds-no\">No. 0001</span></header><dl class=\"ds-fields\"><div><dt>File</dt><dd>VTray-Setup-1.0.0.exe</dd></div><div><dt>VirusTotal</dt><dd><strong>0</strong> of 72 flagged</dd></div></dl></div><aside class=\"ds-stub\"><span>Tear here to install</span></aside></article>",
+      "css": ":host{--ground:#e6e5dd;--stock:#f6f6f1;--ink:#111;--ink-2:#3b3b38;--rule:#c4c3ba}.ds-label{display:grid;grid-template-columns:1fr 160px;background:var(--stock);color:var(--ink);border-radius:10px;box-shadow:0 1px 1px rgba(17,17,17,.08),0 10px 26px rgba(17,17,17,.1);font-family:Archivo,system-ui,sans-serif}.ds-sheet{padding:28px 32px}.ds-head{display:flex;align-items:baseline;gap:14px;padding-bottom:12px;border-bottom:3px solid var(--ink);font-stretch:70%;text-transform:uppercase}.ds-brand{font-weight:800;font-size:26px}.ds-kind{font-weight:600;font-size:14px;letter-spacing:.06em;color:var(--ink-2)}.ds-no{margin-left:auto;font-family:'JetBrains Mono',monospace;font-stretch:normal;font-size:13px;color:var(--ink-2)}.ds-fields{display:grid;grid-template-columns:1.4fr 1fr;margin:20px 0 0;border-top:1px solid var(--ink)}.ds-fields div{padding:12px 16px 12px 0;border-bottom:1px solid var(--rule)}.ds-fields div+div{padding-left:16px;border-left:1px solid var(--rule)}.ds-fields dt{font-stretch:75%;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}.ds-fields dd{margin:4px 0 0;font-family:'JetBrains Mono',monospace;font-size:15px;font-variant-numeric:tabular-nums}.ds-fields strong{color:#17733f;font-size:18px}.ds-stub{position:relative;padding:28px 20px;border-left:2px dashed var(--rule);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-2)}.ds-stub::before,.ds-stub::after{content:'';position:absolute;left:-13px;width:24px;height:24px;border-radius:50%;background:var(--ground)}.ds-stub::before{top:-12px}.ds-stub::after{bottom:-12px}"
+    },
+    {
+      "name": "Warning Sticker",
+      "kind": "chip",
+      "refersTo": "sticker-yellow",
+      "description": "Die-cut auxiliary sticker, yellow or blue, rotated over a label edge.",
+      "html": "<div class=\"ds-sticker\"><b>Ask before uploading</b><span>Unknown files are only sent if you say yes</span></div><div class=\"ds-sticker ds-blue\"><b>Advisory only</b><span>One opinion, never a guarantee</span></div>",
+      "css": ".ds-sticker{display:inline-block;vertical-align:top;margin:16px;width:230px;padding:18px 20px;border-radius:12px;background:#ffd400;color:#2b2400;transform:rotate(-4deg);box-shadow:0 2px 2px rgba(17,17,17,.1),0 8px 18px rgba(17,17,17,.14);font-family:Archivo,system-ui,sans-serif}.ds-sticker b{display:block;font-weight:800;font-stretch:66%;font-size:26px;line-height:1;text-transform:uppercase}.ds-sticker span{display:block;margin-top:8px;font-size:13px;line-height:1.35}.ds-blue{width:210px;padding:12px 16px;background:#8fd0ef;color:#0c2533;transform:rotate(2deg)}.ds-blue b{font-size:18px}.ds-blue span{margin-top:4px}"
+    },
+    {
+      "name": "Peel Sticker",
+      "kind": "custom",
+      "refersTo": "peel-sticker",
+      "description": "Orange sticker with a lifted corner over the consent dialog; click peels it via the @property --fold.",
+      "html": "<div class=\"ds-peel\"><div class=\"ds-dialog\"><p class=\"ds-dt\">Upload to VirusTotal?</p><p>VirusTotal does not know this file.</p><div class=\"ds-btns\"><span>Yes</span><span class=\"ds-no\">No</span></div></div><button class=\"ds-ps\" type=\"button\" onclick=\"this.parentNode.classList.add('is-peeled')\"><b>Peel to read the question</b><span>This is what stands between your file and an upload</span></button></div>",
+      "css": "@property --fold{syntax:'<length-percentage>';inherits:true;initial-value:46px}.ds-peel{position:relative;padding:24px;background:#ffd400;font-family:Archivo,system-ui,sans-serif}.ds-dialog{background:#fff;color:#111;border-radius:10px;padding:22px 26px 20px;font-size:15px;box-shadow:0 2px 4px rgba(43,36,0,.12),0 16px 36px rgba(43,36,0,.16)}.ds-dialog p{margin:0 0 10px}.ds-dt{font-weight:700;font-size:17px}.ds-btns{display:flex;justify-content:flex-end;gap:10px}.ds-btns span{padding:7px 22px;border:1px solid #c4c3ba;border-radius:6px;font-size:14px}.ds-btns .ds-no{border:2px solid #111}.ds-ps{--fold:46px;position:absolute;left:12px;top:40px;width:min(330px,78%);padding:22px 24px 30px;border:0;border-radius:10px;text-align:left;cursor:pointer;font:inherit;background:#ff7a1a;color:#2a1200;transform:rotate(-3deg);filter:drop-shadow(0 2px 2px rgba(42,18,0,.2)) drop-shadow(0 10px 18px rgba(42,18,0,.2));clip-path:polygon(0 0,100% 0,100% calc(100% - var(--fold)),calc(100% - var(--fold)) 100%,0 100%);transition:--fold 700ms cubic-bezier(.16,1,.3,1),opacity 240ms ease-out 520ms}.ds-ps::after{content:'';position:absolute;right:0;bottom:0;width:var(--fold);height:var(--fold);background:linear-gradient(315deg,transparent 49%,#d9d6c8 50%,#fbfaf5 52%,#fbfaf5 100%)}.ds-ps:focus-visible{outline:3px solid #111;outline-offset:3px}.ds-ps b{display:block;font-weight:800;font-stretch:66%;font-size:30px;line-height:1;text-transform:uppercase}.ds-ps span{display:block;margin-top:8px;font-size:14px;max-width:26ch}.is-peeled .ds-ps{--fold:160%;opacity:0;pointer-events:none}@media (prefers-reduced-motion:reduce){.ds-ps{transition:none}}"
+    },
+    {
+      "name": "Dose Strip",
+      "kind": "card",
+      "refersTo": "dose-strip",
+      "description": "Do-not-exceed label on the orange field with mono limits.",
+      "html": "<div class=\"ds-dosefield\"><div class=\"ds-dose\"><p class=\"ds-dh\">Per API key</p><ul><li>No more than <b>4</b> checks a minute.</li><li>No more than <b>500</b> checks a day.</li></ul></div></div>",
+      "css": ".ds-dosefield{padding:32px;background:#ff7a1a;font-family:Archivo,system-ui,sans-serif}.ds-dose{background:#f6f6f1;color:#111;border-radius:10px;padding:26px 32px 24px;box-shadow:0 2px 3px rgba(42,18,0,.16),0 12px 26px rgba(42,18,0,.16)}.ds-dh{margin:0;padding-bottom:12px;border-bottom:3px solid #111;font-weight:800;font-stretch:70%;font-size:22px;text-transform:uppercase}.ds-dose ul{list-style:none;margin:0;padding:0}.ds-dose li{padding:14px 0;border-bottom:1px solid #c4c3ba;font-size:19px}.ds-dose li:last-child{border-bottom:0;padding-bottom:0}.ds-dose b{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:22px;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Tick List",
+      "kind": "custom",
+      "refersTo": "ticks",
+      "description": "List with CSS-drawn 2px ticks and currentColor hairlines; works on any field.",
+      "html": "<ul class=\"ds-ticks\"><li>upload a file you did not say yes to</li><li>need administrator rights</li></ul>",
+      "css": ".ds-ticks{list-style:none;margin:0;padding:16px;background:#8fd0ef;color:#0c2533;font-family:Archivo,system-ui,sans-serif;font-size:18px}.ds-ticks li{position:relative;padding:8px 0 8px 22px;border-bottom:1px solid color-mix(in srgb,currentColor 22%,transparent)}.ds-ticks li::before{content:'';position:absolute;left:2px;top:16px;width:9px;height:5px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg)}"
+    },
+    {
+      "name": "FAQ Item",
+      "kind": "custom",
+      "refersTo": "faq",
+      "description": "Native details with a drawn plus/minus marker.",
+      "html": "<details class=\"ds-faq\"><summary>Is it free?</summary><p>Yes. Open source under the MIT license.</p></details>",
+      "css": ".ds-faq{border-bottom:1px solid #c4c3ba;color:#111;font-family:Archivo,system-ui,sans-serif}.ds-faq summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;cursor:pointer;list-style:none;font-weight:700;font-stretch:85%;font-size:20px}.ds-faq summary::-webkit-details-marker{display:none}.ds-faq summary:focus-visible{outline:3px solid #111;outline-offset:3px}.ds-faq summary::after{content:'';flex-shrink:0;width:14px;height:14px;background:linear-gradient(currentColor,currentColor) center/14px 2px no-repeat,linear-gradient(currentColor,currentColor) center/2px 14px no-repeat}.ds-faq[open] summary::after{background:linear-gradient(currentColor,currentColor) center/14px 2px no-repeat}.ds-faq p{margin:0;padding-bottom:18px;color:#3b3b38}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Dispensing Label",
+    "overview": "Every file gets a pharmacy label. The site is printed matter laid on a counter: off-white thermal label stock on a warm grey ground, black ink, dense condensed caps for printed field names, a monospaced face for printed values, and die-cut auxiliary warning stickers whose saturated colours take over whole page regions. The download is the label's perforated tear-off stub, not a floating button.\n\nDensity is a label's density: hairline rules, tight fields, numbered small print. Depth is physical and modest, the slight lift of a label or sticker off a surface, never glassy or glowing. Motion is limited to two mechanical acts the material can perform: a label printer feeding lines, and a sticker peeling off. The confirmed anti-reference is the dark-navy shield security page and the split hero with a feature-card row.",
+    "keyCharacteristics": [
+      "Label stock (#f6f6f1) on counter ground (#e6e5dd); ink is near-black, never pure grey text on grey.",
+      "One variable family (Archivo) carries every role through its width axis; JetBrains Mono carries values.",
+      "Sticker colours (yellow, orange, pale blue) own whole full-bleed fields, each with its own dark tinted ink.",
+      "Perforation dashes, die-cut notches and rounded corners are the component language.",
+      "Real screenshots at their natural pixel scale are the only imagery."
+    ],
+    "rules": [
+      {
+        "name": "The Whole Region Rule",
+        "body": "A sticker colour either is a small die-cut sticker or fills a full-bleed field edge to edge (yellow text selection is the one exception). It never appears as a tint, a border accent, a badge or a text colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Matched Ink Rule",
+        "body": "Each sticker stock has its own dark ink of the same hue (yellow-ink, orange-ink, blue-ink) for type and shadows on it; shadows under labels on a coloured field are tinted with that field's ink.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Green Rule",
+        "body": "Verdict green marks a clean verdict figure only. It is not a success colour, link colour or button colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Width Axis Rule",
+        "body": "Hierarchy comes from font-stretch and weight, not from new families: narrower and heavier means more \"printed\". Keep headings between 66% and 72% width, field names and nav between 75% and 85%, reading text at 100%.",
+        "section": "typography"
+      },
+      {
+        "name": "The Stamped Value Rule",
+        "body": "Anything a machine would print (hash, size, version, count, limit) is set in JetBrains Mono with tabular figures. Prose numbers in sentences are not.",
+        "section": "typography"
+      },
+      {
+        "name": "The Natural Scale Rule",
+        "body": "App screenshots render at their native pixel size (width and height attributes match the file); they are never upscaled or cropped into decorative frames.",
+        "section": "layout"
+      },
+      {
+        "name": "The Paper Lift Rule",
+        "body": "Every raised surface uses a contact layer under 4px plus a diffuse layer of 6-36px blur, at 0.08-0.2 alpha, tinted with the ink of the surface beneath it.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do put new content on label stock (#f6f6f1) laid on the counter ground (#e6e5dd), closed at the top by a label head with a 3px ink rule.",
+      "Do let a sticker colour own a full-bleed field, with its matched ink for all text on it.",
+      "Do set machine-printed values (hashes, sizes, counts, limits, versions) in JetBrains Mono with tabular figures.",
+      "Do build hierarchy with Archivo's width axis: 66-72% for headings, 75-85% for field names and nav.",
+      "Do make the download a stub behind a dashed perforation with die-cut notches.",
+      "Do draw markers (ticks, plus/minus, arrows) in CSS or inline SVG at a 2px stroke.",
+      "Do show real screenshots at their natural pixel size.",
+      "Do keep motion to printer feed and sticker peel, and render everything static under `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "Don't build the dark-navy shield security page or a split hero with a feature-card row.",
+      "Don't use sticker colours as tints, borders, badges or text colours.",
+      "Don't use verdict green for anything but a clean verdict figure.",
+      "Don't add a second sans family; the width axis does that work.",
+      "Don't use hard offset shadows, glows or glass; depth is paper lift only.",
+      "Don't put small uppercase eyebrow labels above section headings; the label head and the tear instruction on the stub are the only printed captions."
+    ]
+  }
+}
