@@ -1,0 +1,11 @@
+{
+  // Static site for https://vtray.sayed.app, served by Cloudflare Workers static assets.
+  // Deploy from this folder: npx wrangler@4 deploy
+  "name": "vtray-site",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "vtray.sayed.app", "custom_domain": true }]
+}

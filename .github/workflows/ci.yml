@@ -76,6 +76,9 @@ jobs:
           foreach ($left in @($app, $lnk)) { if (Test-Path $left) { throw "left behind after uninstall: $left" } }
           Write-Output "install and uninstall OK"
 
+      - name: Idle memory and CPU budget (25 MB, 1%)
+        run: cargo run --release --example memprobe -- 30
+
       - uses: actions/upload-artifact@v4
         with:
           name: vtray-${{ steps.package.outputs.version }}-windows

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VT Tray: VirusTotal checks from your Windows tray</title>
+  <meta name="description" content="A small, always-on Windows tray app that checks new programs against VirusTotal by hash. Uploads only with your explicit consent. Free and open source.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+  <meta property="og:title" content="VT Tray">
+  <meta property="og:description" content="VirusTotal checks from your Windows tray. Hash-first, consent before every upload.">
+  <meta property="og:image" content="https://vtray.sayed.app/img/tray-menu.png">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="brand" href="/"><img src="favicon.ico" alt="" width="20" height="20"> VT Tray</a>
+      <nav aria-label="Main">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#privacy">Privacy</a>
+        <a href="https://github.com/abusayed0206/vtray">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap intro">
+      <div class="intro-text">
+        <h1>VirusTotal checks from your Windows tray</h1>
+        <p class="lead">VT Tray watches the folders you choose, fingerprints new programs on your PC, and looks up only their hashes. Nothing is uploaded unless you confirm it, file by file.</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/abusayed0206/vtray/releases/latest">Download for Windows</a>
+          <a class="button" href="https://github.com/abusayed0206/vtray">View source</a>
+        </div>
+        <p class="meta">Windows 10 and 11 &middot; per-user install, no admin rights &middot; MIT licensed</p>
+        <p class="badges">
+          <a href="https://github.com/abusayed0206/vtray/actions/workflows/ci.yml"><img src="https://github.com/abusayed0206/vtray/actions/workflows/ci.yml/badge.svg" alt="Build status" height="20"></a>
+          <a href="https://github.com/abusayed0206/vtray/releases/latest"><img src="https://img.shields.io/github/v/release/abusayed0206/vtray?display_name=tag&amp;sort=semver" alt="Latest release" height="20"></a>
+        </p>
+      </div>
+      <figure class="shot">
+        <img src="img/tray-menu.png" alt="The VT Tray menu: check a file, add a watched folder, recent checks, quota and API key status, settings" width="372" height="400">
+      </figure>
+    </section>
+
+    <section id="features" class="wrap section">
+      <h2>What it does</h2>
+      <div class="features">
+        <div class="feature">
+          <h3>Hash first</h3>
+          <p>Check any file from the tray or from Explorer. Only its SHA-256 fingerprint is sent, and known results come back in seconds.</p>
+        </div>
+        <div class="feature">
+          <h3>Consent before every upload</h3>
+          <p>Unknown files can be uploaded after a confirmation showing the name, size, fingerprint, and a community-sharing warning. No is the default. The report opens when the analysis finishes.</p>
+        </div>
+        <div class="feature">
+          <h3>Folder monitoring</h3>
+          <p>New programs and scripts in watched folders are announced once they stop changing. Automatic hash lookups are opt-in.</p>
+        </div>
+        <div class="feature">
+          <h3>Explorer menu</h3>
+          <p><em>Check with VT Tray</em> never uploads. <em>Upload with VT Tray...</em> always asks first. Both sit under Show more options.</p>
+        </div>
+        <div class="feature">
+          <h3>Stays within the free API</h3>
+          <p>One quota gate enforces 4 requests a minute, 500 a day, and 15.5K a month, keeps 100 a day for manual checks, and warns you before a limit.</p>
+        </div>
+        <div class="feature">
+          <h3>Light on your PC</h3>
+          <p>About 12 MB of memory and effectively no CPU while idle. The budget is checked on every build.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <h2>Screenshots</h2>
+      <div class="gallery">
+        <figure>
+          <img src="img/tray-settings.png" alt="Settings submenu: start with Windows, notifications, Explorer context menu, automatic hash checks, pause monitoring, API key" width="316" height="227" loading="lazy">
+          <figcaption>Settings, one click from the tray</figcaption>
+        </figure>
+        <figure>
+          <img src="img/api-key.png" alt="API key dialog explaining the key is stored only in Windows Credential Manager" width="640" height="313" loading="lazy">
+          <figcaption>Your key stays in Windows Credential Manager</figcaption>
+        </figure>
+        <figure>
+          <img src="img/quick-check-no-key.png" alt="Result of a quick check showing the file name, size and SHA-256" width="641" height="464" loading="lazy">
+          <figcaption>A quick check never uploads</figcaption>
+        </figure>
+        <figure>
+          <img src="img/installer.png" alt="VT Tray setup wizard" width="1016" height="776" loading="lazy">
+          <figcaption>Per-user setup, no administrator rights</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="install" class="wrap section">
+      <h2>Install</h2>
+      <ol class="steps">
+        <li>Download <code>VTray-Setup-&lt;version&gt;.exe</code> from the <a href="https://github.com/abusayed0206/vtray/releases/latest">latest release</a> and run it. It installs for your account only and adds a Start menu shortcut.</li>
+        <li>Right-click the tray icon, open <strong>Settings</strong>, and choose <strong>Set or replace API key</strong>. Paste your free <a href="https://www.virustotal.com/gui/my-apikey">VirusTotal API key</a>.</li>
+        <li>Use <strong>Check a file</strong>, add a watched folder, or turn on the Explorer menu.</li>
+      </ol>
+      <p class="note">Uninstall any time from Settings &gt; Apps. It removes startup and Explorer entries, the saved key, settings, cache, and logs. A portable build is attached to each release too.</p>
+    </section>
+
+    <section id="privacy" class="wrap section">
+      <h2>Privacy</h2>
+      <ul class="plain">
+        <li>No telemetry, no accounts, no servers of our own. VT Tray talks only to VirusTotal.</li>
+        <li>Only file names are sent with uploads, never folder paths. Logs never contain your key.</li>
+        <li>Files you upload are shared with VirusTotal's security community, so only upload files you are allowed to share.</li>
+        <li>VirusTotal results are advisory. VT Tray never deletes, quarantines, or changes your files.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <span>&copy; 2026 <a href="https://abusayed.dev">abusayed.dev</a> &middot; MIT License</span>
+      <span>Not affiliated with VirusTotal or Google.</span>
+    </div>
+  </footer>
+</body>
+</html>
