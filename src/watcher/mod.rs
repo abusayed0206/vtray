@@ -17,6 +17,8 @@ pub const HEALTH_INTERVAL: Duration = Duration::from_secs(30);
 const QUEUE_LIMIT: usize = 100;
 /// Margin added before the last event batch when rescanning after an overflow.
 const RESCAN_MARGIN: Duration = Duration::from_secs(10);
+/// Second scan after a folder returns, once its new watch is surely active.
+const CATCH_UP_DELAY: Duration = Duration::from_secs(1);
 
 type PathQueue = Arc<Mutex<VecDeque<PathBuf>>>;
 
@@ -65,6 +67,7 @@ impl WatcherService {
         let thread = thread::spawn(move || {
             let mut last_health = Instant::now();
             let mut last_batch = started;
+            let mut catch_up: Vec<(PathBuf, SystemTime, Instant)> = Vec::new();
             while !thread_stop.load(Ordering::Relaxed) {
                 let mut added = false;
                 match receiver.recv_timeout(Duration::from_millis(500)) {
@@ -115,12 +118,24 @@ impl WatcherService {
                         log::info!("a watched folder is available again; scanning it");
                         let missed = changed_since(std::slice::from_ref(&root), since, QUEUE_LIMIT);
                         added |= enqueue_paths(missed, &thread_queue);
+                        // Windows registers a new watch slightly after `watch` returns; a file
+                        // written in that gap is seen by neither, so scan once more shortly.
+                        catch_up.push((root.clone(), since, Instant::now() + CATCH_UP_DELAY));
                         watched.push(root);
                     }
                     if let Ok(mut unavailable) = thread_unavailable.lock() {
                         *unavailable = lost_paths(&lost);
                     }
                 }
+                let due = Instant::now();
+                catch_up.retain(|(root, since, at)| {
+                    if *at > due {
+                        return true;
+                    }
+                    let missed = changed_since(std::slice::from_ref(root), *since, QUEUE_LIMIT);
+                    added |= enqueue_paths(missed, &thread_queue);
+                    false
+                });
                 if added {
                     notify_window(window);
                 }
