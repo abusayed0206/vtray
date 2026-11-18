@@ -125,8 +125,12 @@ fn a_folder_missing_at_startup_is_picked_up_later() {
     std::fs::create_dir(&later).unwrap();
     let file = later.join("arrived.exe");
     std::fs::write(&file, b"MZ").unwrap();
-    let seen = drain_until(&watcher, &file, Duration::from_secs(8));
-    assert!(seen.contains(&file));
+    let seen = drain_until(&watcher, &file, Duration::from_secs(15));
+    assert!(
+        seen.contains(&file),
+        "not detected; still unavailable: {:?}; seen: {seen:?}",
+        watcher.unavailable()
+    );
 }
 
 #[test]

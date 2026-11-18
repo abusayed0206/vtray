@@ -19,6 +19,9 @@ const QUEUE_LIMIT: usize = 100;
 const RESCAN_MARGIN: Duration = Duration::from_secs(10);
 /// Second scan after a folder returns, once its new watch is surely active.
 const CATCH_UP_DELAY: Duration = Duration::from_secs(1);
+/// File times come from a coarse system clock (about 15 ms ticks), so a file written just after
+/// a folder was lost or returned can look older than that moment. Scans reach back this far.
+const CLOCK_SLACK: Duration = Duration::from_secs(2);
 
 type PathQueue = Arc<Mutex<VecDeque<PathBuf>>>;
 
@@ -115,6 +118,7 @@ impl WatcherService {
                         !back
                     });
                     for (root, since) in returned {
+                        let since = since.checked_sub(CLOCK_SLACK).unwrap_or(since);
                         log::info!("a watched folder is available again; scanning it");
                         let missed = changed_since(std::slice::from_ref(&root), since, QUEUE_LIMIT);
                         added |= enqueue_paths(missed, &thread_queue);
