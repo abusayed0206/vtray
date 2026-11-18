@@ -74,17 +74,26 @@ fn quota_warnings_say_what_happens_and_when_it_resets() {
 fn removal_text_lists_every_step_and_any_failure() {
     use vt_tray::ui::strings::{REMOVE_APP_BODY, removed_summary};
 
-    for step in ["startup", "Explorer menu", "API key", "local data"] {
+    for step in [
+        "startup",
+        "Explorer menu",
+        "Start menu",
+        "Settings > Apps",
+        "API key",
+        "local data",
+    ] {
         assert!(
             REMOVE_APP_BODY.contains(step),
             "confirmation lacks {step:?}"
         );
     }
     assert!(REMOVE_APP_BODY.contains("not touched"));
-    let folder = std::path::Path::new(r"C:\Users\Test\AppData\Local\VTTray");
-    let clean = removed_summary(&[], folder);
-    assert!(clean.contains("removed") && clean.contains(r"AppData\Local\VTTray"));
-    let partial = removed_summary(&["API key: access denied".to_string()], folder);
+    let clean = removed_summary(&[], None);
+    assert!(clean.contains("removed") && clean.contains("deleted after it closes"));
+    let download = std::path::Path::new(r"C:\Users\Test\Downloads\VTray.exe");
+    let portable = removed_summary(&[], Some(download));
+    assert!(portable.contains(r"Downloads\VTray.exe"));
+    let partial = removed_summary(&["API key: access denied".to_string()], None);
     assert!(partial.contains("some steps failed") && partial.contains("access denied"));
 }
 

@@ -388,7 +388,7 @@ impl Worker {
             .try_send(command)
             .map_err(|error| match error {
                 TrySendError::Full(_) => AppError::Validation(
-                    "VTTray is busy with other files; try again shortly".into(),
+                    "VT Tray is busy with other files; try again shortly".into(),
                 ),
                 TrySendError::Disconnected(_) => {
                     AppError::Internal("the check worker has stopped".to_string())

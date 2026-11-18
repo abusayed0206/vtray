@@ -494,7 +494,7 @@ impl Cache {
         Ok(())
     }
 
-    /// Deletes every stored row, quota counters included. Only for removing VTTray from the PC;
+    /// Deletes every stored row, quota counters included. Only for removing VT Tray from the PC;
     /// "Clear local data" keeps quota counters so VirusTotal's limits stay respected.
     pub fn wipe_all(&self) -> Result<(), AppError> {
         let conn = self.lock()?;

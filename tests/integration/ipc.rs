@@ -12,8 +12,12 @@ fn wide(path: &str) -> Vec<u16> {
         .collect()
 }
 
+fn parse_handoff(data: &mut COPYDATASTRUCT) -> Option<ipc::Handoff> {
+    unsafe { ipc::read_handoff(LPARAM(data as *const COPYDATASTRUCT as isize)) }
+}
+
 fn parse(data: &mut COPYDATASTRUCT) -> Option<std::path::PathBuf> {
-    unsafe { ipc::read_check_path(LPARAM(data as *const COPYDATASTRUCT as isize)) }
+    parse_handoff(data).map(|handoff| handoff.path)
 }
 
 #[test]
@@ -39,7 +43,7 @@ fn rejects_malformed_copy_data() {
         lpData: data.as_mut_ptr().cast(),
     };
     let mut wrong_id = COPYDATASTRUCT {
-        dwData: 2,
+        dwData: 99, // 1 = check and 2 = upload are the only request types
         ..null_terminated
     };
     assert!(parse(&mut wrong_id).is_none());
@@ -103,8 +107,40 @@ fn a_second_instance_is_rejected_and_released_on_drop() {
 fn pending_file_round_trips_and_is_consumed_once() {
     let dir = tempfile::tempdir().unwrap();
     let file = dir.path().join("pending-check.txt");
-    let target = std::path::PathBuf::from(r"C:\temp\sample.exe");
-    ipc::write_pending(&target, &file).unwrap();
-    assert_eq!(ipc::take_pending(&file).unwrap(), target);
-    assert!(ipc::take_pending(&file).is_none());
+    for upload in [false, true] {
+        let handoff = ipc::Handoff {
+            path: std::path::PathBuf::from(r"C:\temp\sample.exe"),
+            upload,
+        };
+        ipc::write_pending(&handoff, &file).unwrap();
+        assert_eq!(ipc::take_pending(&file).unwrap(), handoff);
+        assert!(ipc::take_pending(&file).is_none());
+    }
+}
+
+#[test]
+fn an_old_style_pending_file_is_a_plain_check() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("pending-check.txt");
+    std::fs::write(&file, r"C:\temp\old.exe").unwrap();
+    let handoff = ipc::take_pending(&file).unwrap();
+    assert!(!handoff.upload);
+}
+
+#[test]
+fn upload_requests_use_their_own_message_type() {
+    let mut data = wide(r"C:\temp\sample.exe");
+    let mut copy = COPYDATASTRUCT {
+        dwData: 2,
+        cbData: (data.len() * 2) as u32,
+        lpData: data.as_mut_ptr().cast(),
+    };
+    assert!(parse_handoff(&mut copy).unwrap().upload);
+    copy.dwData = 1;
+    assert!(!parse_handoff(&mut copy).unwrap().upload);
+    copy.dwData = 3;
+    assert!(
+        parse_handoff(&mut copy).is_none(),
+        "unknown request types are rejected"
+    );
 }

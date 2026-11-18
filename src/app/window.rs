@@ -29,7 +29,7 @@ pub fn create_hidden_window() -> Result<HWND, AppError> {
     unsafe {
         RegisterClassW(&wnd_class);
     }
-    let title = HSTRING::from("VTTray");
+    let title = HSTRING::from("VT Tray");
     let window = unsafe {
         CreateWindowExW(
             Default::default(),

@@ -4,10 +4,10 @@ use crate::core::errors::{ApiError, AppError};
 use crate::core::quota::{DAY_LIMIT, MANUAL_RESERVE, QuotaWarning};
 use crate::core::types::{LookupSummary, QuotaDenial};
 
-pub const APP: &str = "VTTray";
+pub const APP: &str = "VT Tray";
 
 // Tray tooltip
-pub const TIP_DEFAULT: &str = "VTTray - check files with VirusTotal";
+pub const TIP_DEFAULT: &str = "VT Tray - check files with VirusTotal";
 pub const TIP_KEY_NEEDED: &str = "API key needed";
 pub const TIP_PAUSED: &str = "monitoring paused";
 pub const TIP_READY: &str = "ready";
@@ -134,13 +134,13 @@ pub fn error_message(error: &AppError) -> String {
         AppError::QuotaDenied(denial) => denial_message(*denial).to_string(),
         AppError::Api(ApiError::RateLimited { retry_after }) => match retry_after {
             Some(seconds) => format!(
-                "VirusTotal asked VTTray to slow down. Online checks resume in about {seconds} seconds."
+                "VirusTotal asked VT Tray to slow down. Online checks resume in about {seconds} seconds."
             ),
-            None => "VirusTotal asked VTTray to slow down. Online checks resume in about a minute."
+            None => "VirusTotal asked VT Tray to slow down. Online checks resume in about a minute."
                 .to_string(),
         },
         AppError::Api(ApiError::Unauthorized) => "VirusTotal rejected the API key.".to_string(),
-        AppError::Api(ApiError::Network(_)) => "VTTray could not reach VirusTotal. Check the internet connection, proxy, or firewall, then try again.".to_string(),
+        AppError::Api(ApiError::Network(_)) => "VT Tray could not reach VirusTotal. Check the internet connection, proxy, or firewall, then try again.".to_string(),
         AppError::Api(ApiError::Http { status, .. }) if *status >= 500 => {
             "VirusTotal is having problems right now. Try again later.".to_string()
         }
@@ -166,7 +166,7 @@ pub fn denial_message(denial: QuotaDenial) -> &'static str {
             "Automatic checks are paused to keep capacity for manual checks."
         }
         QuotaDenial::Paused => {
-            "Online requests are paused after VirusTotal asked VTTray to slow down."
+            "Online requests are paused after VirusTotal asked VT Tray to slow down."
         }
     }
 }
@@ -222,12 +222,23 @@ pub const UPLOAD_STARTED_TITLE: &str = "Upload started";
 pub const UPLOAD_STARTED_BODY: &str =
     "The file is being sent to VirusTotal. Analysis can take a few minutes.";
 pub const UPLOAD_COMPLETE_TITLE: &str = "Upload complete";
-pub const UPLOAD_COMPLETE_BODY: &str = "The VirusTotal report is ready.";
+pub fn upload_complete_body(name: &str, flagged: u32) -> String {
+    let verdict = match flagged {
+        0 => "no engines flagged it".to_string(),
+        1 => "1 engine flagged it".to_string(),
+        n => format!("{n} engines flagged it"),
+    };
+    format!("{name}: {verdict}. The full report is open in your browser.")
+}
+
+pub fn report_url(sha256: &str) -> String {
+    format!("https://www.virustotal.com/gui/file/{sha256}")
+}
 pub const ANALYSIS_RUNNING_TITLE: &str = "Analysis still running";
 pub const ANALYSIS_RUNNING_BODY: &str = "VirusTotal accepted the file and is still analyzing it. Use Check a file to retrieve the report later.";
 /// Stored as the upload's last error; shown in history.
 pub const UPLOAD_INTERRUPTED: &str =
-    "VTTray closed before the upload finished; check the file again";
+    "VT Tray closed before the upload finished; check the file again";
 
 pub fn consent_body(name: &str, size: &str, sha256: &str, large: bool) -> String {
     let mut text = format!(
@@ -242,7 +253,7 @@ pub fn consent_body(name: &str, size: &str, sha256: &str, large: bool) -> String
 /// Explorer quick checks are hash-only (FR-020): no upload offer, only where to go for one.
 pub fn quick_check_unknown(name: &str, sha256: &str) -> String {
     format!(
-        "VirusTotal does not know this file.\n\nFile: {name}\nSHA-256: {sha256}\n\nNothing was uploaded. To upload it, use Check a file in the VTTray tray menu."
+        "VirusTotal does not know this file.\n\nFile: {name}\nSHA-256: {sha256}\n\nNothing was uploaded. To upload it, use Check a file in the VT Tray tray menu."
     )
 }
 
@@ -255,7 +266,7 @@ pub fn cannot_upload(name: &str) -> String {
 // Monitoring
 pub const PICK_FOLDER_TITLE: &str = "Choose a folder to watch";
 pub const FOLDER_ADDED: &str = "The folder was added. New executable and script files will be detected locally; uploading still requires your consent for each file.";
-pub const MONITORING_TITLE: &str = "VTTray monitoring";
+pub const MONITORING_TITLE: &str = "VT Tray monitoring";
 pub const DETECTIONS_TITLE: &str = "VirusTotal detections";
 pub const NEW_FILE_TITLE: &str = "New file detected";
 
@@ -279,23 +290,27 @@ pub const CLEAR_TITLE: &str = "Clear local data?";
 pub const CLEAR_BODY: &str = "This removes cached VirusTotal results, detections, and upload history. Watched folders, preferences, and quota counters are kept, so VirusTotal's limits are still respected.";
 pub const CLEARED: &str = "Local history and cached results were cleared.";
 
-// Removing VTTray from the PC (constitution V: removal leaves nothing registered behind)
-pub const MENU_REMOVE_APP: &str = "Remove VTTray from this PC...";
-pub const REMOVE_APP_TITLE: &str = "Remove VTTray from this PC?";
-pub const REMOVE_APP_BODY: &str = "This will:\n\n- remove VTTray from Windows startup\n- remove the \"Check with VT Tray\" Explorer menu entry\n- delete the saved VirusTotal API key\n- delete all local data, settings, and history\n\nVTTray then exits. Files you checked or uploaded are not touched.\n\nRemove VTTray?";
+// Removing VT Tray from the PC (constitution V: removal leaves nothing registered behind)
+pub const MENU_REMOVE_APP: &str = "Remove VT Tray from this PC...";
+pub const REMOVE_APP_TITLE: &str = "Remove VT Tray from this PC?";
+pub const REMOVE_APP_BODY: &str = "This will:\n\n- remove VT Tray from Windows startup\n- remove the Explorer menu entries, the Start menu shortcut, and the Settings > Apps entry\n- delete the saved VirusTotal API key\n- delete all local data, settings, and history\n\nVT Tray then exits. Files you checked or uploaded are not touched.\n\nRemove VT Tray?";
 
-pub fn removed_summary(problems: &[String], leftover: &std::path::Path) -> String {
+/// `leftover`: a program file the user must delete themselves (a copy outside the install
+/// folder, such as a download). None when VT Tray deletes its own files after closing.
+pub fn removed_summary(problems: &[String], leftover: Option<&std::path::Path>) -> String {
     let mut text = if problems.is_empty() {
-        "VTTray was removed from startup and the Explorer menu, and its API key and data were deleted.".to_string()
+        "VT Tray was removed: startup, Explorer menu, Start menu, and Settings > Apps entries, the API key, and all data. Its remaining files are deleted after it closes.".to_string()
     } else {
         format!(
-            "VTTray was removed, but some steps failed:\n\n- {}\n\nYou can retry them after starting VTTray again.",
+            "VT Tray was removed, but some steps failed:\n\n- {}\n\nYou can retry them after starting VT Tray again.",
             problems.join("\n- ")
         )
     };
-    text.push_str(&format!(
-        "\n\nTo finish, delete the program file and this folder (it holds the log files): {}",
-        leftover.display()
-    ));
+    if let Some(file) = leftover {
+        text.push_str(&format!(
+            "\n\nThis copy was not installed, so delete it yourself: {}",
+            file.display()
+        ));
+    }
     text
 }

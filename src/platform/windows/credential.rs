@@ -2,7 +2,7 @@ use crate::api::client::ApiKeyProvider;
 use crate::core::errors::AppError;
 use zeroize::Zeroizing;
 
-const SERVICE: &str = "VTTray";
+const SERVICE: &str = "VT Tray";
 const USER: &str = "api-key";
 
 pub struct CredentialStore;

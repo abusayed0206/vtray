@@ -17,6 +17,7 @@ use crate::platform::windows::autostart;
 use crate::platform::windows::context_menu;
 use crate::platform::windows::credential::CredentialStore;
 use crate::platform::windows::ipc;
+use crate::platform::windows::setup as platform_setup;
 use crate::platform::windows::shell;
 use crate::platform::windows::single_instance::SingleInstance;
 use crate::ui::strings as s;
@@ -57,18 +58,33 @@ const PROGRESS_TIMER_ID: usize = 2;
 #[derive(Debug, Clone)]
 struct PendingCheck {
     path: PathBuf,
+    /// True for the tray picker and Explorer "Upload with VT Tray...": may prompt for a key
+    /// and may offer an upload (always behind the consent dialog). False for quick checks.
     allow_key_prompt: bool,
 }
 
+impl From<ipc::Handoff> for PendingCheck {
+    fn from(handoff: ipc::Handoff) -> Self {
+        Self {
+            path: handoff.path,
+            allow_key_prompt: handoff.upload,
+        }
+    }
+}
+
 pub fn run() -> Result<(), AppError> {
+    match mode() {
+        Mode::Cleanup => return run_cleanup(),
+        Mode::Tray => {}
+    }
     let paths = AppPaths::discover()?;
-    let startup_check = check_argument();
+    let startup_check = handoff_argument();
     let _instance = SingleInstance::acquire_default()?;
     if _instance.is_none() {
-        if let Some(path) = startup_check
-            && !ipc::send_check_with_timeout(&path, std::time::Duration::from_secs(3))?
+        if let Some(handoff) = startup_check
+            && !ipc::send_with_timeout(&handoff, std::time::Duration::from_secs(3))?
         {
-            ipc::write_pending(&path, &paths.pending_check_file)?;
+            ipc::write_pending(&handoff, &paths.pending_check_file)?;
         }
         return Ok(());
     }
@@ -87,7 +103,7 @@ pub fn run() -> Result<(), AppError> {
     };
     window::install_app(window, app);
     window::initialize_app(window);
-    log::info!("VTTray started");
+    log::info!("VT Tray started");
     let result = window::message_loop();
     if let Some(mut app) = window::remove_app(window) {
         app.shutdown();
@@ -96,12 +112,90 @@ pub fn run() -> Result<(), AppError> {
     result
 }
 
-fn check_argument() -> Option<PathBuf> {
+enum Mode {
+    Tray,
+    Cleanup,
+}
+
+/// `--cleanup` is run silently by the Inno Setup uninstaller; anything else starts the tray.
+fn mode() -> Mode {
+    if std::env::args()
+        .skip(1)
+        .any(|argument| argument == "--cleanup")
+    {
+        Mode::Cleanup
+    } else {
+        Mode::Tray
+    }
+}
+
+/// Uninstall hook: close a running tray, then remove what the installer does not track
+/// (startup and Explorer entries, the saved key, settings, data, logs). No dialogs.
+fn run_cleanup() -> Result<(), AppError> {
+    ipc::close_running(std::time::Duration::from_secs(5));
+    let paths = AppPaths::discover()?;
+    let (problems, _) = remove_everything(&paths, &CredentialStore::new(), true);
+    if problems.is_empty() {
+        Ok(())
+    } else {
+        Err(AppError::Internal(problems.join("; ")))
+    }
+}
+
+/// Steps shared by "Remove VT Tray from this PC" (portable copies) and the uninstaller's
+/// `--cleanup` (constitution V). Every step runs even if an earlier one fails.
+/// `delete_now`: no VT Tray process holds the folders open, so delete them immediately;
+/// otherwise they are deleted shortly after this process exits.
+/// Returns the problems and, for a portable copy, the program file the user must delete.
+fn remove_everything(
+    paths: &AppPaths,
+    credentials: &CredentialStore,
+    delete_now: bool,
+) -> (Vec<String>, Option<PathBuf>) {
+    let mut problems = Vec::new();
+    let executable = std::env::current_exe().unwrap_or_default();
+    if let Err(error) = autostart::set_enabled(&executable, false) {
+        problems.push(format!("Windows startup entry: {}", error.safe_message()));
+    }
+    if let Err(error) = context_menu::unregister() {
+        problems.push(format!("Explorer menu entries: {}", error.safe_message()));
+    }
+    if let Err(error) = credentials.delete_key() {
+        problems.push(format!("API key: {}", error.safe_message()));
+    }
+    let folders = [paths.config_dir.clone(), paths.data_dir.clone()];
+    if delete_now {
+        problems.extend(platform_setup::delete_now(&folders));
+    } else {
+        for file in [&paths.config_file, &paths.pending_check_file] {
+            match std::fs::remove_file(file) {
+                Ok(()) => {}
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+                Err(error) => problems.push(format!("{}: {error}", safe_base_name(file))),
+            }
+        }
+        if let Err(error) = platform_setup::schedule_delete(&folders) {
+            problems.push(format!("remaining files: {}", error.safe_message()));
+        }
+    }
+    let portable = platform_setup::uninstaller_for(&executable).is_none();
+    (problems, portable.then_some(executable))
+}
+
+/// `--check <file>` (Explorer "Check with VT Tray", hash-only) or `--upload <file>`
+/// (Explorer "Upload with VT Tray...", which still asks for consent).
+fn handoff_argument() -> Option<ipc::Handoff> {
     let mut arguments = std::env::args_os().skip(1);
     while let Some(argument) = arguments.next() {
-        if argument.to_string_lossy() == "--check" {
-            return arguments.next().map(PathBuf::from);
-        }
+        let upload = match argument.to_string_lossy().as_ref() {
+            "--check" => false,
+            "--upload" => true,
+            _ => continue,
+        };
+        return arguments.next().map(|path| ipc::Handoff {
+            path: PathBuf::from(path),
+            upload,
+        });
     }
     None
 }
@@ -123,9 +217,9 @@ pub struct App {
     tray: Option<tray::TrayIcon>,
     taskbar_message: u32,
     pending: VecDeque<PendingCheck>,
-    startup_check: Option<PathBuf>,
+    startup_check: Option<ipc::Handoff>,
     shutting_down: bool,
-    /// Set after "Remove VTTray from this PC"; shutdown must not write settings back.
+    /// Set after "Remove VT Tray from this PC"; shutdown must not write settings back.
     removed: bool,
 }
 
@@ -133,7 +227,7 @@ impl App {
     fn new(
         window: HWND,
         paths: AppPaths,
-        startup_check: Option<PathBuf>,
+        startup_check: Option<ipc::Handoff>,
     ) -> Result<Self, AppError> {
         let config = ConfigStore::new(paths.config_file.clone());
         let preferences = config.load()?;
@@ -170,17 +264,11 @@ impl App {
     }
 
     pub(crate) fn initialize(&mut self) {
-        if let Some(path) = self.startup_check.take() {
-            self.pending.push_back(PendingCheck {
-                path,
-                allow_key_prompt: false,
-            });
+        if let Some(handoff) = self.startup_check.take() {
+            self.pending.push_back(PendingCheck::from(handoff));
         }
-        if let Some(path) = ipc::take_pending(&self.paths.pending_check_file) {
-            self.pending.push_back(PendingCheck {
-                path,
-                allow_key_prompt: false,
-            });
+        if let Some(handoff) = ipc::take_pending(&self.paths.pending_check_file) {
+            self.pending.push_back(PendingCheck::from(handoff));
         }
         unsafe {
             windows::Win32::UI::WindowsAndMessaging::SetTimer(
@@ -372,12 +460,9 @@ impl App {
     }
 
     pub fn handle_copy_data(&mut self, lparam: windows::Win32::Foundation::LPARAM) -> bool {
-        let path = unsafe { ipc::read_check_path(lparam) };
-        if let Some(path) = path {
-            self.pending.push_back(PendingCheck {
-                path,
-                allow_key_prompt: false,
-            });
+        let handoff = unsafe { ipc::read_handoff(lparam) };
+        if let Some(handoff) = handoff {
+            self.pending.push_back(PendingCheck::from(handoff));
             unsafe {
                 let _ = windows::Win32::UI::WindowsAndMessaging::PostMessageW(
                     Some(self.window),
@@ -526,8 +611,9 @@ impl App {
     }
 
     pub fn poll_pending(&mut self) {
-        if let Some(path) = ipc::take_pending(&self.paths.pending_check_file) {
-            self.queue_check(path, false);
+        if let Some(handoff) = ipc::take_pending(&self.paths.pending_check_file) {
+            let pending = PendingCheck::from(handoff);
+            self.queue_check(pending.path, pending.allow_key_prompt);
         }
     }
 
@@ -633,12 +719,30 @@ impl App {
         self.stop_upload_progress();
         self.refresh_tooltip();
         if let Some(summary) = &outcome.summary {
-            if self.preferences.notifications_enabled
-                && let Some(tray) = self.tray.as_mut()
-            {
-                let _ = tray.notify(s::UPLOAD_COMPLETE_TITLE, s::UPLOAD_COMPLETE_BODY, false);
+            // The user already chose to upload, so the report opens without another question.
+            let url = s::report_url(&summary.sha256);
+            match shell::open_url(&url) {
+                Ok(()) => {
+                    log::info!("report opened for {}", safe_base_name(&outcome.path));
+                    if self.preferences.notifications_enabled
+                        && let Some(tray) = self.tray.as_mut()
+                    {
+                        let _ = tray.notify(
+                            s::UPLOAD_COMPLETE_TITLE,
+                            &s::upload_complete_body(
+                                &safe_base_name(&outcome.path),
+                                summary.flagged(),
+                            ),
+                            summary.flagged() > 0,
+                        );
+                    }
+                }
+                // No browser: fall back to the result dialog, which offers the report link.
+                Err(error) => {
+                    log::warn!("could not open the report: {}", error.safe_message());
+                    self.show_summary(Some(&outcome.path), summary, false);
+                }
             }
-            self.show_summary(Some(&outcome.path), summary, false);
         } else {
             self.show_message(
                 s::ANALYSIS_RUNNING_TITLE,
@@ -838,13 +942,13 @@ impl App {
         // Native box so "No" is the default button: Enter or Esc never uploads (ui-consent contract).
         let answer = unsafe {
             use windows::Win32::UI::WindowsAndMessaging::{
-                IDYES, MB_DEFBUTTON2, MB_ICONWARNING, MB_YESNO, MessageBoxW,
+                IDYES, MB_DEFBUTTON2, MB_ICONWARNING, MB_SETFOREGROUND, MB_YESNO, MessageBoxW,
             };
             MessageBoxW(
                 Some(self.window),
                 &windows::core::HSTRING::from(text.as_str()),
                 &windows::core::HSTRING::from(s::CONSENT_TITLE),
-                MB_YESNO | MB_DEFBUTTON2 | MB_ICONWARNING,
+                MB_YESNO | MB_DEFBUTTON2 | MB_ICONWARNING | MB_SETFOREGROUND,
             ) == IDYES
         };
         log::info!(
@@ -919,7 +1023,7 @@ impl App {
             .show();
         log::info!("result dialog answer: {answer:?}");
         if matches!(answer, MessageDialogResult::Yes) {
-            let url = format!("https://www.virustotal.com/gui/file/{}", summary.sha256);
+            let url = s::report_url(&summary.sha256);
             if let Err(error) = shell::open_url(&url) {
                 self.show_message(s::APP, &error.safe_message(), MessageLevel::Error);
             }
@@ -1044,43 +1148,40 @@ impl App {
     fn remove_from_pc(&mut self) {
         let confirmed = unsafe {
             use windows::Win32::UI::WindowsAndMessaging::{
-                IDYES, MB_DEFBUTTON2, MB_ICONWARNING, MB_YESNO, MessageBoxW,
+                IDYES, MB_DEFBUTTON2, MB_ICONWARNING, MB_SETFOREGROUND, MB_YESNO, MessageBoxW,
             };
             MessageBoxW(
                 Some(self.window),
                 &windows::core::HSTRING::from(s::REMOVE_APP_BODY),
                 &windows::core::HSTRING::from(s::REMOVE_APP_TITLE),
-                MB_YESNO | MB_DEFBUTTON2 | MB_ICONWARNING,
+                MB_YESNO | MB_DEFBUTTON2 | MB_ICONWARNING | MB_SETFOREGROUND,
             ) == IDYES
         };
         if !confirmed {
             return;
         }
-        log::info!("removing VTTray from this PC");
-        self.watcher.take();
-        let mut problems = Vec::new();
+        log::info!("removing VT Tray from this PC");
         let executable = std::env::current_exe().unwrap_or_default();
-        if let Err(error) = autostart::set_enabled(&executable, false) {
-            problems.push(format!("Windows startup entry: {}", error.safe_message()));
-        }
-        if let Err(error) = context_menu::unregister() {
-            problems.push(format!("Explorer menu entry: {}", error.safe_message()));
-        }
-        if let Err(error) = self.credentials.delete_key() {
-            problems.push(format!("API key: {}", error.safe_message()));
-        }
-        if let Err(error) = self.cache.wipe_all() {
-            problems.push(format!("local data: {}", error.safe_message()));
-        }
-        // Delete only our own files, never a folder's other contents.
-        for file in [&self.paths.config_file, &self.paths.pending_check_file] {
-            match std::fs::remove_file(file) {
-                Ok(()) => {}
-                Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
-                Err(error) => problems.push(format!("{}: {error}", safe_base_name(file))),
+        if let Some(uninstaller) = platform_setup::uninstaller_for(&executable) {
+            // The uninstaller runs `--cleanup`, which closes this tray and removes the rest.
+            match std::process::Command::new(&uninstaller)
+                .arg("/SILENT")
+                .spawn()
+            {
+                Ok(_) => {
+                    self.removed = true;
+                    return;
+                }
+                Err(error) => log::warn!("could not start the uninstaller: {error}"),
             }
         }
-        let _ = std::fs::remove_dir(&self.paths.config_dir); // only succeeds when empty
+        self.watcher.take();
+        // Wipe now, so the data is gone even if the delayed folder removal cannot run.
+        let wiped = self.cache.wipe_all();
+        let (mut problems, leftover) = remove_everything(&self.paths, &self.credentials, false);
+        if let Err(error) = wiped {
+            problems.push(format!("local data: {}", error.safe_message()));
+        }
         self.removed = true;
         for problem in &problems {
             log::warn!("removal step failed: {problem}");
@@ -1092,7 +1193,7 @@ impl App {
         };
         self.show_message(
             s::APP,
-            &s::removed_summary(&problems, &self.paths.data_dir),
+            &s::removed_summary(&problems, leftover.as_deref()),
             level,
         );
         unsafe {
@@ -1134,7 +1235,7 @@ impl App {
             return;
         }
         self.shutting_down = true;
-        log::info!("VTTray stopping");
+        log::info!("VT Tray stopping");
         self.watcher.take();
         self.tray.take();
         self.worker.shutdown();

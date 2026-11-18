@@ -4,7 +4,7 @@ use winreg::RegKey;
 use winreg::enums::{HKEY_CURRENT_USER, KEY_QUERY_VALUE, KEY_SET_VALUE};
 
 pub const RUN_KEY: &str = r"Software\Microsoft\Windows\CurrentVersion\Run";
-pub const VALUE_NAME: &str = "VTTray";
+pub const VALUE_NAME: &str = "VT Tray";
 
 pub fn set_enabled(executable: &Path, enabled: bool) -> Result<(), AppError> {
     set_enabled_at(

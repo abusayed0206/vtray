@@ -20,8 +20,8 @@ impl AppPaths {
         let dirs = BaseDirs::new()
             .ok_or_else(|| AppError::Config("could not resolve application data folders".into()))?;
         Ok(Self::from_dirs(
-            &dirs.config_dir().join("VTTray"),
-            &dirs.data_local_dir().join("VTTray"),
+            &dirs.config_dir().join("VT Tray"),
+            &dirs.data_local_dir().join("VT Tray"),
         ))
     }
 

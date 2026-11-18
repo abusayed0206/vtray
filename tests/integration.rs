@@ -30,3 +30,6 @@ mod autostart;
 
 #[path = "integration/context_menu.rs"]
 mod context_menu;
+
+#[path = "integration/setup.rs"]
+mod setup;

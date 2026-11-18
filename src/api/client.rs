@@ -56,13 +56,13 @@ impl VtClient {
             .http_status_as_error(false)
             .timeout_connect(Some(Duration::from_secs(10)))
             .timeout_global(Some(Duration::from_secs(120)))
-            .user_agent("VTTray/0.1")
+            .user_agent(concat!("VTray/", env!("CARGO_PKG_VERSION")))
             .build();
         let upload_config = ureq::Agent::config_builder()
             .http_status_as_error(false)
             .timeout_connect(Some(Duration::from_secs(10)))
             .timeout_global(Some(Duration::from_secs(1800)))
-            .user_agent("VTTray/0.1")
+            .user_agent(concat!("VTray/", env!("CARGO_PKG_VERSION")))
             .build();
         Self {
             agent: ureq::Agent::new_with_config(config),
